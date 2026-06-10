@@ -3,9 +3,6 @@
 </p>
 
 # AMORA
-...
-
-# AMORA
 
 AI-powered pregnancy fitness mobile app that detects movement in real-time via smartphone camera and provides instant correction if a movement is deemed unsafe.
 
