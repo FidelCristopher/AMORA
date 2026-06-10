@@ -1,0 +1,73 @@
+{
+  "_comment": "Threshold Trimester 1 — AMORA squat analyser",
+  "version": "1.0",
+  "trimester": 1,
+  "clinical_basis": {
+    "sources": ["ACOG", "Mayo Clinic", "Straub & Powers 2024"],
+    "notes": "Knee flexion target ≤90°. Neutral spine required. Relaxin hormone active — avoid extreme ROM."
+  },
+
+  "landmarks_used": {
+    "knee_angle":              ["hip", "knee", "ankle"],
+    "hip_vertical_angle":      ["shoulder_mid", "hip_mid", "vertical_reference"],
+    "ankle_tibia_angle":       ["knee", "ankle", "foot_index"],
+    "spine_deviation":         ["shoulder_mid", "hip_mid"]
+  },
+
+  "phase_definitions": {
+    "s1_standing": {
+      "knee_angle_range": [0, 32],
+      "description": "Posisi berdiri tegak"
+    },
+    "s2_transition": {
+      "knee_angle_range": [35, 65],
+      "description": "Fase turun atau naik — buffer antara berdiri dan squat penuh"
+    },
+    "s3_squat": {
+      "knee_angle_range": [70, 90],
+      "description": "Posisi squat — target kedalaman aman trimester 1"
+    }
+  },
+
+  "hard_constraints": {
+    "knee_flexion_max": {
+      "value": 90,
+      "unit": "degrees",
+      "clinical_rationale": "ACOG/Mayo Clinic: 90° target untuk keamanan kehamilan, mencegah tekanan berlebih pada ligamen yang dilemahkan relaxin"
+    },
+    "hip_forward_lean_max": {
+      "value": 50,
+      "unit": "degrees",
+      "clinical_rationale": "Straub & Powers 2024: batas lean ke depan untuk menjaga spine netral dan mengurangi lumbar shear force"
+    },
+    "hip_backward_lean_min": {
+      "value": 10,
+      "unit": "degrees",
+      "clinical_rationale": "Mencegah lean ke belakang berlebihan yang meningkatkan risiko jatuh"
+    },
+    "ankle_tibia_max": {
+      "value": 45,
+      "unit": "degrees",
+      "clinical_rationale": "Mencegah knee-over-toe yang meningkatkan beban patellofemoral"
+    },
+    "spine_neutral_deviation_max": {
+      "value": 15,
+      "unit": "degrees",
+      "clinical_rationale": "Deviasi dari garis vertikal shoulder_mid→hip_mid tidak boleh melebihi 15° — proxy untuk lumbar flexion"
+    }
+  },
+
+  "rep_validity": {
+    "required_sequence": ["s2", "s3", "s2", "s1"],
+    "min_frames_in_s3": 10,
+    "notes": "Rep dihitung valid hanya jika mencapai s3 dan kembali ke s1 tanpa melanggar hard constraint"
+  },
+
+  "error_codes": {
+    "ERR_KNEE_TOO_DEEP":     "Lutut melebihi 90° fleksi",
+    "ERR_HIP_LEAN_FORWARD":  "Badan condong terlalu ke depan",
+    "ERR_HIP_LEAN_BACK":     "Badan condong terlalu ke belakang",
+    "ERR_KNEE_OVER_TOE":     "Lutut melewati ujung jari kaki",
+    "ERR_SPINE_DEVIATION":   "Tulang belakang tidak netral"
+  }
+}
