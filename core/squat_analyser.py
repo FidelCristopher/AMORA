@@ -32,7 +32,7 @@ class SquatAnalyser:
         self._phase_seq      = []
         self._rep_count      = 0
         self._frames_in_s3   = 0
-        self._incorrect_reps = 
+        self._incorrect_reps = 0
 
     # -- phase detection --
 
