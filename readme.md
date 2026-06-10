@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Logo_Amora.png" width="120" alt="AMORA Logo"/>
+  <img src="assets/LogoAmora.png" width="120" alt="AMORA Logo"/>
 </p>
 
 # AMORA
