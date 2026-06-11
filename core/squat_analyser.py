@@ -19,7 +19,7 @@ class SquatAnalyser:
     This layer is immutable — no ML, no LLM, no external calls.
     """
 
-    THRESHOLD_PATH = Path(__file__).parent / "thresholds" / "squat_t1.json"
+    THRESHOLD_PATH = Path(__file__).resolve().parent / "thresholds" / "squat_t1.json"
 
     def __init__(self):
         self._thresholds  = load_thresholds(self.THRESHOLD_PATH)
