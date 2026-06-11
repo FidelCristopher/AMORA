@@ -19,6 +19,13 @@ Safety    → Rule-based (immutable, clinical basis)
 Quality   → ML Model (1D-CNN, trained from rule-based)
 Feedback  → LLM (constrained, post-rep only)
 
+## Installation
+
+```bash
+pip install -r requirements.txt
+python run_realtime.py
+```
+
 ### Clinical Basis
 
 Squat thresholds for Trimester 1 are based on:
