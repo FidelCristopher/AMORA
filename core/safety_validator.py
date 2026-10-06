@@ -9,7 +9,7 @@ class SafetyValidator:
     """
 
     def __init__(self, analyser: SquatAnalyser):
-        self._analyser     = analyser
+        self._analyser = analyser
         self._override_log = []
 
     # -- validation --
@@ -20,8 +20,7 @@ class SafetyValidator:
         Accepts rule_result from SquatAnalyser and optional ML quality score.
         Returns final validated verdict.
         """
-        errors      = rule_result["errors"]
-        rep_valid   = len(errors) == 0
+        errors = rule_result["errors"]
 
         # if rule-based detected violations, ML score is overridden unconditionally
         if errors:
@@ -57,7 +56,7 @@ class SafetyValidator:
         """Record every instance where ML output was overridden by rule-based."""
         entry = {
             "ml_score_rejected": ml_score,
-            "reason":            errors,
+            "reason": errors,
         }
         self._override_log.append(entry)
 
@@ -71,18 +70,22 @@ class SafetyValidator:
 
     # -- verdict packaging --
 
-    def _make_verdict(self, rule_result: dict,
-                      final_score: float, overridden: bool) -> dict:
+    def _make_verdict(self, rule_result: dict, final_score: float, overridden: bool) -> dict:
         """Package final validated verdict for feedback engine."""
         return {
-            "phase":          rule_result["phase"],
-            "errors":         rule_result["errors"],
-            "rep_count":      rule_result["rep_count"],
+            "phase": rule_result["phase"],
+            "errors": rule_result["errors"],
+            "camera_aligned": rule_result.get("camera_aligned", True),
+            "rep_count": rule_result["rep_count"],
             "incorrect_reps": rule_result["incorrect_reps"],
-            "angles":         rule_result["angles"],
-            "quality_score":  round(final_score, 4),
-            "ml_overridden":  overridden,
-            "rep_safe":       len(rule_result["errors"]) == 0,
+            "lower_hips": rule_result.get("lower_hips", False),
+            "side": rule_result.get("side", "unknown"),
+            "offset_angle": rule_result.get("offset_angle", 0.0),
+            "angles": rule_result["angles"],
+            "landmarks": rule_result.get("landmarks", {}),
+            "quality_score": round(final_score, 4),
+            "ml_overridden": overridden,
+            "rep_safe": len(rule_result["errors"]) == 0,
         }
 
     def reset(self):

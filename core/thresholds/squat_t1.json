@@ -1,17 +1,17 @@
 {
   "_comment": "Threshold Trimester 1 — AMORA squat analyser",
-  "version": "1.0",
+  "version": "1.1",
   "trimester": 1,
   "clinical_basis": {
     "sources": ["ACOG", "Mayo Clinic", "Straub & Powers 2024"],
-    "notes": "Knee flexion target ≤90°. Neutral spine required. Relaxin hormone active — avoid extreme ROM."
+    "notes": "Knee flexion target ~80-90°. Neutral spine required. Relaxin hormone active — avoid extreme deep squatting (>95°)."
   },
 
   "landmarks_used": {
     "knee_angle":              ["hip", "knee", "ankle"],
-    "hip_vertical_angle":      ["shoulder_mid", "hip_mid", "vertical_reference"],
-    "ankle_tibia_angle":       ["knee", "ankle", "foot_index"],
-    "spine_deviation":         ["shoulder_mid", "hip_mid"]
+    "hip_vertical_angle":      ["shoulder", "hip", "vertical_reference"],
+    "ankle_tibia_angle":       ["knee", "ankle", "vertical_reference"],
+    "spine_deviation":         ["shoulder", "hip"]
   },
 
   "phase_definitions": {
@@ -20,54 +20,63 @@
       "description": "Posisi berdiri tegak"
     },
     "s2_transition": {
-      "knee_angle_range": [35, 65],
-      "description": "Fase turun atau naik — buffer antara berdiri dan squat penuh"
+      "knee_angle_range": [33, 69],
+      "description": "Fase turun atau naik — transisi antara berdiri dan squat penuh"
     },
     "s3_squat": {
-      "knee_angle_range": [70, 90],
-      "description": "Posisi squat — target kedalaman aman trimester 1"
+      "knee_angle_range": [70, 95],
+      "description": "Posisi squat — target kedalaman aman trimester 1 (toleransi s/d 95°)"
     }
   },
 
   "hard_constraints": {
     "knee_flexion_max": {
-      "value": 90,
+      "value": 96.0,
       "unit": "degrees",
-      "clinical_rationale": "ACOG/Mayo Clinic: 90° target untuk keamanan kehamilan, mencegah tekanan berlebih pada ligamen yang dilemahkan relaxin"
+      "clinical_rationale": "ACOG/Mayo Clinic: target fleksi ≤90° dengan toleransi biomekanik hingga 95°. Melampaui 96° dianggap squat terlalu dalam (deep squat)."
     },
     "hip_forward_lean_max": {
-      "value": 50,
+      "value": 50.0,
       "unit": "degrees",
       "clinical_rationale": "Straub & Powers 2024: batas lean ke depan untuk menjaga spine netral dan mengurangi lumbar shear force"
     },
     "hip_backward_lean_min": {
-      "value": 10,
+      "value": 3.0,
       "unit": "degrees",
-      "clinical_rationale": "Mencegah lean ke belakang berlebihan yang meningkatkan risiko jatuh"
+      "clinical_rationale": "Batas minimal kemiringan hip saat squat/transisi untuk mencegah hip hiper-ekstensi ke belakang"
     },
     "ankle_tibia_max": {
-      "value": 45,
+      "value": 45.0,
       "unit": "degrees",
       "clinical_rationale": "Mencegah knee-over-toe yang meningkatkan beban patellofemoral"
     },
     "spine_neutral_deviation_max": {
-      "value": 15,
+      "value": 50.0,
       "unit": "degrees",
-      "clinical_rationale": "Deviasi dari garis vertikal shoulder_mid→hip_mid tidak boleh melebihi 15° — proxy untuk lumbar flexion"
+      "clinical_rationale": "Batas deviasi tulang belakang sejalan dengan hip angle max"
     }
   },
 
+  "camera_alignment": {
+    "offset_threshold": 45.0,
+    "inactive_threshold": 15.0
+  },
+
+  "guidance": {
+    "lower_hips_range": [50, 70]
+  },
+
   "rep_validity": {
-    "required_sequence": ["s2", "s3", "s2", "s1"],
-    "min_frames_in_s3": 10,
+    "required_sequence": ["s2", "s3", "s2"],
     "notes": "Rep dihitung valid hanya jika mencapai s3 dan kembali ke s1 tanpa melanggar hard constraint"
   },
 
   "error_codes": {
-    "ERR_KNEE_TOO_DEEP":     "Lutut melebihi 90° fleksi",
+    "ERR_KNEE_TOO_DEEP":     "Lutut melebihi batas aman fleksi (>95°)",
     "ERR_HIP_LEAN_FORWARD":  "Badan condong terlalu ke depan",
     "ERR_HIP_LEAN_BACK":     "Badan condong terlalu ke belakang",
-    "ERR_KNEE_OVER_TOE":     "Lutut melewati ujung jari kaki",
-    "ERR_SPINE_DEVIATION":   "Tulang belakang tidak netral"
+    "ERR_KNEE_OVER_TOE":     "Lutut melewati ujung jari kaki (Shin miring berlebih)",
+    "ERR_SPINE_DEVIATION":   "Tulang belakang tidak netral",
+    "WARN_CAMERA_NOT_ALIGNED": "Kamera belum tepat di posisi samping (Harap menghadap samping)"
   }
 }

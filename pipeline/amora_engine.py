@@ -15,14 +15,14 @@ class AmoraEngine:
 
     # -- per-frame entry point --
 
-    def process_frame(self, landmarks) -> dict:
+    def process_frame(self, landmarks, frame_w: int = 640, frame_h: int = 480) -> dict:
         """
         Called once per frame from run_realtime.py.
         Returns validated verdict ready for UI rendering.
         """
         # Layer 1 + 2: geometry and rule-based analysis
-        rule_result = self._analyser.analyse_frame(landmarks)
-
+        rule_result = self._analyser.analyse_frame(landmarks, frame_w, frame_h)
+        
         # Layer 4: safety validation
         # ml_quality_score is None until Phase 3 ML model is integrated
         verdict = self._validator.validate(
