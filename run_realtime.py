@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 
 from pipeline.amora_engine import AmoraEngine
+from ml.data_collector import RepDataCollector
 
 
 # -- mediapipe setup --
@@ -9,8 +10,8 @@ mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 
 
-def draw_overlay(frame, verdict: dict):
-    """Render verdict and posture feedback onto the camera frame."""
+def draw_overlay(frame, verdict: dict, collector_stats: dict | None = None):
+    """Render verdict, posture feedback, and dataset collection progress onto the camera frame."""
     h, w = frame.shape[:2]
 
     # Status / Phase & Rep Counter
@@ -51,6 +52,12 @@ def draw_overlay(frame, verdict: dict):
             cv2.putText(frame, error, (20, 275 + i * 35),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
+    # Dataset Collection Stats (Top-right)
+    if collector_stats:
+        ds_text = f"Dataset: {collector_stats['total_files']} reps ({collector_stats['correct']} ok, {collector_stats['incorrect']} bad)"
+        cv2.putText(frame, ds_text, (w - 380, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+
     # Active side & Offset telemetry
     side = verdict.get("side", "unknown")
     offset = verdict.get("offset_angle", 0.0)
@@ -66,6 +73,7 @@ def draw_overlay(frame, verdict: dict):
 def main():
     engine = AmoraEngine()
     engine.start_session()
+    collector = RepDataCollector()
 
     cap = cv2.VideoCapture(0)
 
@@ -94,7 +102,12 @@ def main():
                 # process frame through engine
                 h, w = frame.shape[:2]
                 verdict = engine.process_frame(results.pose_landmarks.landmark, w, h)
-                draw_overlay(frame, verdict)
+
+                # record kinematic rep data for ML dataset
+                collector.process_frame(verdict)
+
+                # draw HUD
+                draw_overlay(frame, verdict, collector.get_summary())
 
                 # debug logging ke terminal
                 status_str = "ALIGN_OK" if verdict.get("camera_aligned", True) else "WARN_ALIGN"
